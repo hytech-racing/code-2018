@@ -19,5 +19,7 @@
     * _"In teaching others, we teach ourselves"_
 
 ## Organization
-* `/remote-telemetry` Code relating to remote telemetry
-* `/teensy` Code for Teensy microcontrollers
+* `Archive/` Older code that have either been phased out due to design changes or code from older cars
+* `Car_Code/` Code for the current car design we have
+* `Libraries/` Library files that are needed to compile our code (you can create a symlink from your Arduino libraries folder to this)
+* `Testing_Code/` Files that are used to either test components of the car or different hardware (such as the CAN Bus)
