@@ -3,12 +3,12 @@
  * Init 2017-05-13
  * Interface with dashboard lights, buttons, and buzzer.
  * Read pedal sensor values and communicate with motor controller.
- * Configured for Pedal Box Board rev3
+ * Configured for Pedal Box Board rev3 
  */
 #include <FlexCAN.h>
 #include "HyTech17.h"
 #include <Metro.h>
-
+#include <MCP3208.h>
 /*
  * Pin definitions
  */
@@ -18,11 +18,15 @@
 #define LED_BMS 6
 #define LED_BSPD 13
 #define LED_IMD 7
-#define PEDAL_BRAKE A2 //analog port of brake sensor
-#define PEDAL_THROTTLE_1 A0 //first throttle sensor port
-#define PEDAL_THROTTLE_2 A1 //second throttle sensor port
+#define PEDAL_BRAKE 3 //adc port of brake sensor
+#define PEDAL_THROTTLE_1 0 //first throttle sensor port on adc
+#define PEDAL_THROTTLE_2 2 //second throttle sensor port on adc
 #define READY_SOUND 2
 #define SOFTWARE_SHUTDOWN_RELAY 12
+#define CS_PIN A0
+#define CLOCK_PIN 13
+#define MOSI_PIN 1
+#define MISO_PIN 0
 
 /*
  * Constant definitions
@@ -81,6 +85,8 @@ uint16_t value_pedal_throttle_2 = 0;
 
 FlexCAN CAN(500000);
 static CAN_message_t msg;
+
+MCP3208 adc(CLOCK_PIN, MOSI_PIN, MISO_PIN, CS_PIN); // for analog to digital converter
 
 void setup() {
   pinMode(BSPD_FAULT, INPUT);
@@ -459,9 +465,10 @@ void loop() {
  * Read values of sensors
  */
 void read_values() {
-    value_pedal_throttle_1 = analogRead(PEDAL_THROTTLE_1);
-    value_pedal_throttle_2 = analogRead(PEDAL_THROTTLE_2);
-    value_pedal_brake = analogRead(PEDAL_BRAKE);
+    
+    value_pedal_throttle_1 = (adc.readADC(PEDAL_THROTTLE_1)*5)/1024;
+    value_pedal_throttle_2 = (adc.readADC(PEDAL_THROTTLE_2)*5)/1024;
+    value_pedal_brake = (adc.readADC(PEDAL_BRAKE)*5)/1024;
     if (value_pedal_brake >= BRAKE_ACTIVE) {
       brake_pedal_active = true;
     } else {
