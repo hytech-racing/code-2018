@@ -8,6 +8,7 @@
 #include <FlexCAN.h>
 #include "HyTech17.h"
 #include <Metro.h>
+#include <MCP3208.h>
 /*
  * Pin definitions
  */
