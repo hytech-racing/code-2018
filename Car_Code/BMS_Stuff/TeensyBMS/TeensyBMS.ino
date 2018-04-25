@@ -145,7 +145,7 @@ void setup() {
     init_cfg(); // Initialize and write configuration registers to LTC6804 chips
     poll_cell_voltage();
     memcpy(cell_delta_voltage, cell_voltages, 2 * TOTAL_IC * TOTAL_CELLS);
-    bms_status.set_state(BMS_STATE_CHARGING);
+    bms_status.set_state(BMS_STATE_CHARGE_ENABLED);
     Serial.println("Setup Complete!");
 
     // DEBUG Code for testing cell packs
@@ -170,7 +170,7 @@ void loop() {
             if (bms_status.get_state() == BMS_STATE_DISCHARGING && bms_temperatures.get_high_temperature() > discharge_temp_critical_high) {
                 bms_status.set_discharge_overtemp(true);
                 Serial.println("Discharge overtemperature fault!");
-            } else if (bms_status.get_state() >= BMS_STATE_CHARGING && bms_temperatures.get_high_temperature() > charge_temp_critical_high) {
+            } else if (bms_status.get_state() >= BMS_STATE_CHARGE_ENABLED && bms_temperatures.get_high_temperature() > charge_temp_critical_high) {
                 bms_status.set_charge_overtemp(true);
                 Serial.println("Charge overtemperature fault!");
             } else if (bms_temperatures.get_low_temperature() < temp_critical_low) {
